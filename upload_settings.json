@@ -1,4 +1,6 @@
 {
+    "email": "",
+    "password": "",
     "folder_path": "/home/bledy/Music/Red Hot Chili Peppers/Californication",
     "audio_format": ".flac",
     "excluded": [
@@ -13,7 +15,6 @@
     ],
     "channel": "@bLeDy",
     "deposit": "0.1",
-    "price": null,
     "language": "en",
     "license": {
         "type": "copyright",
