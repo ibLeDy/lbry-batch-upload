@@ -69,7 +69,7 @@ the edges and neither well thought nor complete.
   - Move credentials from `.env` to `upload_settings.json`
   - Remove `python-dotenv` requirement
   - Apply PageObject pattern
-  - Remove `price` from settings until i manage to circunvent an obstructing lable
+  - Remove `price` from settings until i manage to circunvent an obstructing label
   - Bump wait time before and after file selection to 1s
 
 ### TODO
