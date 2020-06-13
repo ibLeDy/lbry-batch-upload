@@ -72,11 +72,15 @@ the edges and neither well thought nor complete.
   - Remove `price` from settings until i manage to circunvent an obstructing label
   - Bump wait time before and after file selection to 1s
 
+- 2020-06-13:
+  - Handle `price` option, only LBC atm
+
 ### TODO
 
 - [x] Implement PageObject pattern
 - [x] Keep the upload page on sight when uploading the last file
 - [x] Better explanation of usage and capabilities _(not good enough)_
+- [x] Handle price option _(only for LBC)_
 - [ ] Add configuration guide to `README.md` with all valid values for `upload_settings.json`
 - [ ] Add example credentials file or move them to `upload_settings.json`
 - [ ] Validate `upload_settings.json` before uploading any file
@@ -86,7 +90,6 @@ the edges and neither well thought nor complete.
 - [ ] Follow prefered selector order (`id > name > links text > css > xpath`)
 - [ ] Add argument to enable dark mode on the webpage
 - [ ] Prevent or react to "failed to fetch" error on login
-- [ ] Handle price option
 - [ ] Implement waits
 - [ ] Type hints
 - [ ] Unit tests

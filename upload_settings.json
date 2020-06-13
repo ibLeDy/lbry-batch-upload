@@ -15,6 +15,7 @@
     ],
     "channel": "@bLeDy",
     "deposit": "0.1",
+    "price": null,
     "language": "en",
     "license": {
         "type": "copyright",

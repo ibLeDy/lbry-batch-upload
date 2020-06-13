@@ -7,7 +7,8 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import ElementClickInterceptedException
+
+# from selenium.common.exceptions import ElementClickInterceptedException
 
 
 class PageObject:
@@ -115,7 +116,7 @@ class UploadPage(PageObject):
         return self.driver.find_element_by_css_selector('#content_bid')
 
     def __price_button(self):
-        return self.driver.find_element_by_css_selector('#content_cost')
+        return self.driver.find_element_by_css_selector('label[for="content_cost"]')
 
     def __price(self):
         return self.driver.find_element_by_css_selector('#content_cost_amount_amount')
@@ -230,8 +231,8 @@ class UploadPage(PageObject):
         if self.settings['deposit'] is not None:
             self.fill_deposit()
 
-        # if self.settings['price'] is not None:  # FIXME: label is obstructing so can't click
-        #     self.fill_price()
+        if self.settings['price'] is not None:
+            self.fill_price()
 
         if first_song:
             self.open_additional_options()
