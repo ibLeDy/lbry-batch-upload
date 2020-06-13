@@ -3,3 +3,4 @@ venv
 .env
 .mypy_cache
 geckodriver.log
+test
