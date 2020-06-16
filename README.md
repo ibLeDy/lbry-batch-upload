@@ -7,11 +7,14 @@ the edges and neither well thought nor complete.
 
 ## User Requirements
 
-- Fill [upload_settings.json] before running the script
-- Provide an absolute folder path
+- Fill [config.json] before running the script
+- Provided folder path must be an absolute one
 - Available thumbnail url
 - Song titles must match the format `{number} - {title}.{format}`
 - Folder structure as follows
+
+> Files should be in a folder which is named after the album, inside a
+> folder that is named after the artist.
 
 ```bash
 .
@@ -36,9 +39,6 @@ the edges and neither well thought nor complete.
         └── Californication.jpg
 ```
 
-> Files should be in a folder which is named after the album, which should be located
-> inside another folder that is named after the artist.
-
 ## Usage
 
 - Create a virtual enviroment and activate it
@@ -53,7 +53,7 @@ the edges and neither well thought nor complete.
     pip install -r requirements.txt
     ```
 
-- Fill `upload_settings.json`
+- Fill `config.json`
 
 - Run the script
 
@@ -75,21 +75,29 @@ the edges and neither well thought nor complete.
 - 2020-06-13:
   - Handle `price` option, only LBC atm
 
+- 2020-06-16:
+  - Rename settings file: `upload_settings.json -> config.json`
+  - Handle closing success upload popup with a custom decorator
+  - Add missing decorator to some functions
+  - Rename base class for pages `PageObject -> BasePage`
+  - Separate clicking and filling info so we can resume when a popup was detected
+  - Add sleep before uploading next file so they get uploaded in order
+
 ### TODO
 
 - [x] Implement PageObject pattern
 - [x] Keep the upload page on sight when uploading the last file
 - [x] Better explanation of usage and capabilities _(not good enough)_
 - [x] Handle price option _(only for LBC)_
-- [ ] Add configuration guide to `README.md` with all valid values for `upload_settings.json`
-- [ ] Add example credentials file or move them to `upload_settings.json`
-- [ ] Validate `upload_settings.json` before uploading any file
+- [x] Add example credentials file or move them to `config.json` _(they got moved)_
+- [ ] Add configuration guide to `README.md` with all valid values for `config.json`
+- [ ] Validate `config.json` before uploading any file
 - [ ] Warn about naming issues before uploading any file (mainly punctuation)
 - [ ] Prepend artist, album and title info to description string
-- [ ] Better way of setting a description than a string in `upload_settings.json`
+- [ ] Better way of setting a description than a string in `config.json`
 - [ ] Follow prefered selector order (`id > name > links text > css > xpath`)
-- [ ] Add argument to enable dark mode on the webpage
 - [ ] Prevent or react to "failed to fetch" error on login
+- [ ] Add argument to enable dark mode on the webpage
 - [ ] Implement waits
 - [ ] Type hints
 - [ ] Unit tests
@@ -97,4 +105,4 @@ the edges and neither well thought nor complete.
 [lbry.tv]: https://lbry.tv/
 [selenium]: https://github.com/SeleniumHQ/selenium
 [pyautogui]: https://github.com/asweigart/pyautogui
-[upload_settings.json]: upload_settings.json
+[config.json]: config.json

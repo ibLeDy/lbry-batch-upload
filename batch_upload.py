@@ -1,17 +1,17 @@
 import os
 import time
 import json
+from functools import wraps
 
 import pyautogui
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import ElementClickInterceptedException
 
-# from selenium.common.exceptions import ElementClickInterceptedException
 
-
-class PageObject:
+class BasePage:
     def __init__(self, driver):
         self.driver = driver
 
@@ -26,7 +26,7 @@ class PageObject:
             print('No banner found')
 
 
-class LoginPage(PageObject):
+class LoginPage(BasePage):
     def __email_field(self):
         return self.driver.find_element_by_css_selector('#username')
 
@@ -50,38 +50,20 @@ class LoginPage(PageObject):
         self.__continue_button().click()
 
 
-# def close_success_popup():
-#     # FIXME: waiting for fill_and_publish to be separated
-#     try:
-#         driver.find_element_by_css_selector('[aria-label="Close"]').click()
-#     except NoSuchElementException:
-#         print('No success popup found')
+def close_success_popup(method):
+    @wraps(method)
+    def method_wrapper(self, *method_args, **method_kwargs):
+        try:
+            method(self, *method_args, **method_kwargs)
+        except ElementClickInterceptedException:
+            self.driver.find_element_by_css_selector('[aria-label="Close"]').click()
+            time.sleep(0.5)
+            method(self, *method_args, **method_kwargs)
+
+    return method_wrapper
 
 
-# def detect_popup(func):
-#     def func_wrapper(*args):
-#         try:
-#             func(*args)
-#         except ElementClickInterceptedException:
-#             driver.find_element_by_css_selector('[aria-label="Close"]').click()
-#             func(*args)
-#     return func_wrapper
-
-
-# def detect_popup(driver):
-#     def popup_decorator(func):
-#         def func_wrapper(*args):
-#             try:
-#                 func(*args)
-#             except ElementClickInterceptedException:
-#                 print('Popup detected, trying to close it and continue')
-#                 driver.find_element_by_css_selector('[aria-label="Close"]').click()
-#                 func(*args)
-#         return func_wrapper
-#     return popup_decorator
-
-
-class UploadPage(PageObject):
+class UploadPage(BasePage):
     def __init__(self, driver, settings):
         self.settings = settings
         super().__init__(driver)
@@ -138,12 +120,13 @@ class UploadPage(PageObject):
     def __publish_button(self):
         return self.driver.find_element_by_css_selector('[aria-label="Publish"]')
 
-    def __publish_next_button(self):  # FIXME: replace with load_page
-        return self.driver.find_element_by_link_text('Publish')
+    def __publish_next_button(self):
+        return self.driver.find_element_by_css_selector('a[href="/$/publish"]')
 
     def load_page(self):
         self.driver.get('https://lbry.tv/$/publish')
 
+    @close_success_popup
     def choose_file(self, song_name):
         self.__file_button().click()
 
@@ -157,72 +140,83 @@ class UploadPage(PageObject):
         pyautogui.press('enter')
         time.sleep(1)
 
-    # @detect_popup
+    @close_success_popup
     def fill_title(self, upload_title):
         self.__title().send_keys(upload_title)
 
-    # @detect_popup
+    @close_success_popup
     def fill_description(self):
         self.__description().send_keys(self.settings['description'])
 
-    # @detect_popup
-    def fill_thumbnail_url(self):
+    @close_success_popup
+    def select_thumbnail_url(self):
         self.__thumbnail_button().click()
+
+    @close_success_popup
+    def fill_thumbnail_url(self):
         self.__thumbnail().send_keys(self.settings['thumbnail_url'])
 
-    # @detect_popup
+    @close_success_popup
     def fill_tags(self):
         self.__tags().send_keys(','.join(self.settings['tags']), Keys.ENTER)
 
-    # @detect_popup
+    @close_success_popup
     def select_channel(self):
         Select(self.__channel_list()).select_by_value(self.settings['channel'])
 
-    # @detect_popup
+    @close_success_popup
     def fill_claim_name(self, claim_name):
         claim = self.__claim_url()
         claim.clear()
         claim.send_keys(claim_name)
 
-    # @detect_popup
+    @close_success_popup
     def fill_deposit(self):
         content_bid = self.__deposit()
         content_bid.clear()
         content_bid.send_keys(self.settings['deposit'])
 
-    # @detect_popup
-    def fill_price(self):
+    @close_success_popup
+    def select_price(self):
         self.__price_button().click()
+
+    @close_success_popup
+    def fill_price(self):
         price = self.__price()
         price.clear()
         price.send_keys(self.settings['price'])
 
-    # @detect_popup
+    @close_success_popup
     def open_additional_options(self):
         self.__options_button().click()
 
-    # @detect_popup
+    @close_success_popup
     def select_language(self):
         Select(self.__language_list()).select_by_value(self.settings['language'])
 
-    # @detect_popup
+    @close_success_popup
     def select_license(self):
         Select(self.__license_list()).select_by_value(self.settings['license']['type'])
 
-    # @detect_popup
+    @close_success_popup
     def fill_license(self):
         copyright_notice = self.__copyright_notice()
         copyright_notice.clear()
         copyright_notice.send_keys(self.settings['license']['notice'])
 
-    # @detect_popup
+    @close_success_popup
     def publish(self):
         self.__publish_button().click()
+
+    @close_success_popup
+    def continue_publishing(self):
+        self.__publish_next_button().click()
 
     def upload_song(self, song_data, first_song=False):
         self.choose_file(song_data['song_name'])
         self.fill_title(song_data['upload_title'])
         self.fill_description()
+        self.select_thumbnail_url()
         self.fill_thumbnail_url()
         self.fill_tags()
         self.select_channel()
@@ -232,6 +226,7 @@ class UploadPage(PageObject):
             self.fill_deposit()
 
         if self.settings['price'] is not None:
+            self.select_price()
             self.fill_price()
 
         if first_song:
@@ -244,13 +239,11 @@ class UploadPage(PageObject):
             self.fill_license()  # TODO: only fill if license == "copyright"
 
         self.publish()
-
-    def continue_publishing(self):
-        self.__publish_next_button().click()
+        time.sleep(5)  # NOTE: so they finish uploading in order
 
 
-def get_upload_settings():
-    with open('upload_settings.json', 'r') as fp:
+def get_upload_config():
+    with open('config.json', 'r') as fp:
         return json.load(fp)
 
 
@@ -293,30 +286,30 @@ def get_song_data(song_name, folder_path):
 
 
 if __name__ == '__main__':
-    upload_settings = get_upload_settings()
+    upload_config = get_upload_config()
 
     driver = webdriver.Chrome()
     driver.implicitly_wait(10)
 
     login_page = LoginPage(driver)
     login_page.load_page()
-    login_page.login(upload_settings['email'], upload_settings['password'])
+    login_page.login(upload_config['email'], upload_config['password'])
     login_page.close_banners()
 
-    upload_page = UploadPage(driver, upload_settings)
+    upload_page = UploadPage(driver, upload_config)
     upload_page.load_page()
 
     songs = get_song_names(
-        upload_settings['folder_path'],
-        upload_settings['audio_format'],
-        upload_settings['excluded'],
+        upload_config['folder_path'],
+        upload_config['audio_format'],
+        upload_config['excluded'],
     )
     song_count = len(songs)
 
     while len(songs) > 0:
         # From last to first so they are ordered on the feed
         song_name = songs.pop()
-        song_data = get_song_data(song_name, upload_settings['folder_path'])
+        song_data = get_song_data(song_name, upload_config['folder_path'])
 
         # Click "Additional Options" only on the first publish
         if len(songs) + 1 == song_count:
@@ -324,8 +317,8 @@ if __name__ == '__main__':
         else:
             upload_page.upload_song(song_data)
 
+        # Inform the user, useful for excluding songs if the script crashes
         print('[PUBLISHED]', song_name)
-        time.sleep(0.5)
 
         # Keep the upload page on sight when uploading the last file
         if not len(songs) == 0:
