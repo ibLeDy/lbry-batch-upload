@@ -1,6 +1,6 @@
 import os
 import time
-import json
+import toml
 from functools import wraps
 
 import pyautogui
@@ -9,6 +9,25 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import ElementClickInterceptedException
+
+
+with open('config.toml', 'r') as f:
+    config = toml.load(f)
+
+EMAIL = config['user']['email']
+PASSWORD = config['user']['password']
+FOLDER_PATH = config['files']['folder_path']
+AUDIO_FORMAT = config['files']['audio_format']
+EXCLUDED = config['files']['excluded']
+DESCRIPTION = config['upload']['description']
+THUMBNAIL_URL = config['upload']['thumbnail_url']
+TAGS = config['upload']['tags']
+CHANNEL = config['upload']['channel']
+DEPOSIT = config['upload']['deposit']
+PRICE = config['upload']['price']
+LANGUAGE = config['upload']['language']
+LICENSE_TYPE = config['upload']['license_type']
+LICENSE_NOTICE = config['upload']['license_notice']
 
 
 class BasePage:
@@ -64,10 +83,6 @@ def close_success_popup(method):
 
 
 class UploadPage(BasePage):
-    def __init__(self, driver, settings):
-        self.settings = settings
-        super().__init__(driver)
-
     def __file_button(self):
         return self.driver.find_element_by_css_selector('[aria-label="Choose File"]')
 
@@ -131,7 +146,7 @@ class UploadPage(BasePage):
         self.__file_button().click()
 
         time.sleep(1)
-        file_path = f'{self.settings["folder_path"]}/{song_name}'
+        file_path = f'{FOLDER_PATH}/{song_name}'
         for folder in file_path.lstrip(os.sep).split(os.sep):
             pyautogui.hotkey('divide')
             pyautogui.write(folder)
@@ -146,7 +161,7 @@ class UploadPage(BasePage):
 
     @close_success_popup
     def fill_description(self):
-        self.__description().send_keys(self.settings['description'])
+        self.__description().send_keys(DESCRIPTION)
 
     @close_success_popup
     def select_thumbnail_url(self):
@@ -154,15 +169,15 @@ class UploadPage(BasePage):
 
     @close_success_popup
     def fill_thumbnail_url(self):
-        self.__thumbnail().send_keys(self.settings['thumbnail_url'])
+        self.__thumbnail().send_keys(THUMBNAIL_URL)
 
     @close_success_popup
     def fill_tags(self):
-        self.__tags().send_keys(','.join(self.settings['tags']), Keys.ENTER)
+        self.__tags().send_keys(','.join(TAGS), Keys.ENTER)
 
     @close_success_popup
     def select_channel(self):
-        Select(self.__channel_list()).select_by_value(self.settings['channel'])
+        Select(self.__channel_list()).select_by_value(CHANNEL)
 
     @close_success_popup
     def fill_claim_name(self, claim_name):
@@ -174,7 +189,7 @@ class UploadPage(BasePage):
     def fill_deposit(self):
         content_bid = self.__deposit()
         content_bid.clear()
-        content_bid.send_keys(self.settings['deposit'])
+        content_bid.send_keys(str(DEPOSIT))  # NOTE: selenium wants an string
 
     @close_success_popup
     def select_price(self):
@@ -184,7 +199,7 @@ class UploadPage(BasePage):
     def fill_price(self):
         price = self.__price()
         price.clear()
-        price.send_keys(self.settings['price'])
+        price.send_keys(str(PRICE))  # NOTE: selenium wants an string
 
     @close_success_popup
     def open_additional_options(self):
@@ -192,17 +207,17 @@ class UploadPage(BasePage):
 
     @close_success_popup
     def select_language(self):
-        Select(self.__language_list()).select_by_value(self.settings['language'])
+        Select(self.__language_list()).select_by_value(LANGUAGE)
 
     @close_success_popup
     def select_license(self):
-        Select(self.__license_list()).select_by_value(self.settings['license']['type'])
+        Select(self.__license_list()).select_by_value(LICENSE_TYPE)
 
     @close_success_popup
     def fill_license(self):
         copyright_notice = self.__copyright_notice()
         copyright_notice.clear()
-        copyright_notice.send_keys(self.settings['license']['notice'])
+        copyright_notice.send_keys(LICENSE_NOTICE)
 
     @close_success_popup
     def publish(self):
@@ -222,10 +237,10 @@ class UploadPage(BasePage):
         self.select_channel()
         self.fill_claim_name(song_data['claim_name'])
 
-        if self.settings['deposit'] is not None:
+        if DEPOSIT:
             self.fill_deposit()
 
-        if self.settings['price'] is not None:
+        if PRICE:
             self.select_price()
             self.fill_price()
 
@@ -234,17 +249,12 @@ class UploadPage(BasePage):
 
         self.select_language()
 
-        if self.settings['license']['type'] is not None:
+        if LICENSE_TYPE:  # TODO: handle `LICENSE_TYPE != "copyright"`
             self.select_license()
-            self.fill_license()  # TODO: only fill if license == "copyright"
+            self.fill_license()
 
         self.publish()
         time.sleep(5)  # NOTE: so they finish uploading in order
-
-
-def get_upload_config():
-    with open('config.json', 'r') as fp:
-        return json.load(fp)
 
 
 def get_song_names(folder_path, audio_format, excluded):
@@ -286,30 +296,24 @@ def get_song_data(song_name, folder_path):
 
 
 if __name__ == '__main__':
-    upload_config = get_upload_config()
-
     driver = webdriver.Chrome()
     driver.implicitly_wait(10)
 
     login_page = LoginPage(driver)
     login_page.load_page()
-    login_page.login(upload_config['email'], upload_config['password'])
+    login_page.login(EMAIL, PASSWORD)
     login_page.close_banners()
 
-    upload_page = UploadPage(driver, upload_config)
+    upload_page = UploadPage(driver)
     upload_page.load_page()
 
-    songs = get_song_names(
-        upload_config['folder_path'],
-        upload_config['audio_format'],
-        upload_config['excluded'],
-    )
+    songs = get_song_names(FOLDER_PATH, AUDIO_FORMAT, EXCLUDED)
     song_count = len(songs)
 
     while len(songs) > 0:
         # From last to first so they are ordered on the feed
         song_name = songs.pop()
-        song_data = get_song_data(song_name, upload_config['folder_path'])
+        song_data = get_song_data(song_name, FOLDER_PATH)
 
         # Click "Additional Options" only on the first publish
         if len(songs) + 1 == song_count:

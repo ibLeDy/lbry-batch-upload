@@ -7,7 +7,7 @@ the edges and neither well thought nor complete.
 
 ## User Requirements
 
-- Fill [config.json] before running the script
+- Fill [config.toml] before running the script
 - Provided folder path must be an absolute one
 - Available thumbnail url
 - Song titles must match the format `{number} - {title}.{format}`
@@ -53,7 +53,7 @@ the edges and neither well thought nor complete.
     pip install -r requirements.txt
     ```
 
-- Fill `config.json`
+- Fill `config.toml`
 
 - Run the script
 
@@ -68,7 +68,7 @@ the edges and neither well thought nor complete.
   - Change settings file name: `settings.json -> upload_settings.json`
   - Move credentials from `.env` to `upload_settings.json`
   - Remove `python-dotenv` requirement
-  - Apply PageObject pattern
+  - Implement PageObject pattern
   - Remove `price` from settings until i manage to circunvent an obstructing label
   - Bump wait time before and after file selection to 1s
 
@@ -83,21 +83,28 @@ the edges and neither well thought nor complete.
   - Separate clicking and filling info so we can resume when a popup was detected
   - Add sleep before uploading next file so they get uploaded in order
 
+- 2020-06-17:
+  - Use toml instead of json for config file: `config.json -> config.toml`
+  - Define constants to catch basic config errors
+  - Replace `None` checks with existence ones
+
 ### TODO
 
 - [x] Implement PageObject pattern
 - [x] Keep the upload page on sight when uploading the last file
 - [x] Better explanation of usage and capabilities _(not good enough)_
 - [x] Handle price option _(only for LBC)_
-- [x] Add example credentials file or move them to `config.json` _(they got moved)_
-- [ ] Add configuration guide to `README.md` with all valid values for `config.json`
-- [ ] Validate `config.json` before uploading any file
+- [x] Add example credentials file or move them to `config.toml` _(they got moved)_
+- [x] Validate `config.toml` before uploading any file _(parsing and key existence)_
+- [x] Better way of setting a description _(toml supports multi-line strings)_
+- [ ] Add configuration guide to `README.md` with all valid values for `config.toml`
+- [ ] Check that all value types are correct in `config.toml`
 - [ ] Warn about naming issues before uploading any file (mainly punctuation)
 - [ ] Prepend artist, album and title info to description string
-- [ ] Better way of setting a description than a string in `config.json`
 - [ ] Follow prefered selector order (`id > name > links text > css > xpath`)
 - [ ] Prevent or react to "failed to fetch" error on login
 - [ ] Add argument to enable dark mode on the webpage
+- [ ] Implement custom error messages
 - [ ] Implement waits
 - [ ] Type hints
 - [ ] Unit tests
@@ -105,4 +112,4 @@ the edges and neither well thought nor complete.
 [lbry.tv]: https://lbry.tv/
 [selenium]: https://github.com/SeleniumHQ/selenium
 [pyautogui]: https://github.com/asweigart/pyautogui
-[config.json]: config.json
+[config.toml]: config.toml
