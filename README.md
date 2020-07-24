@@ -44,7 +44,7 @@ the edges and neither well thought nor complete.
 - Create a virtual enviroment and activate it
 
     ```sh
-    python3 -m virtualenv venv && source venv/bin/activate
+    python3 -m virtualenv .venv && source .venv/bin/activate
     ```
 
 - Install the requirements
@@ -63,17 +63,13 @@ the edges and neither well thought nor complete.
 
 ### Changelog
 
-- 2020-06-12:
-  - Change webdriver yo improve speed: `Firefox -> Chrome`
-  - Change settings file name: `settings.json -> upload_settings.json`
-  - Move credentials from `.env` to `upload_settings.json`
-  - Remove `python-dotenv` requirement
-  - Implement PageObject pattern
-  - Remove `price` from settings until i manage to circunvent an obstructing label
-  - Bump wait time before and after file selection to 1s
+- 2020-07-24:
+  - Changelog is now in reverse chronological order
 
-- 2020-06-13:
-  - Handle `price` option, only LBC atm
+- 2020-06-17:
+  - Use toml instead of json for config file: `config.json -> config.toml`
+  - Define constants to catch basic config errors
+  - Replace `None` checks with existence ones
 
 - 2020-06-16:
   - Rename settings file: `upload_settings.json -> config.json`
@@ -83,10 +79,17 @@ the edges and neither well thought nor complete.
   - Separate clicking and filling info so we can resume when a popup was detected
   - Add sleep before uploading next file so they get uploaded in order
 
-- 2020-06-17:
-  - Use toml instead of json for config file: `config.json -> config.toml`
-  - Define constants to catch basic config errors
-  - Replace `None` checks with existence ones
+- 2020-06-13:
+  - Handle `price` option, only LBC atm
+
+- 2020-06-12:
+  - Change webdriver yo improve speed: `Firefox -> Chrome`
+  - Change settings file name: `settings.json -> upload_settings.json`
+  - Move credentials from `.env` to `upload_settings.json`
+  - Remove `python-dotenv` requirement
+  - Implement PageObject pattern
+  - Remove `price` from settings until i manage to circunvent an obstructing label
+  - Bump wait time before and after file selection to 1s
 
 ### TODO
 
@@ -109,7 +112,7 @@ the edges and neither well thought nor complete.
 - [ ] Type hints
 - [ ] Unit tests
 
-[lbry.tv]: https://lbry.tv/
+[lbry.tv]: https://lbry.tv
 [selenium]: https://github.com/SeleniumHQ/selenium
 [pyautogui]: https://github.com/asweigart/pyautogui
 [config.toml]: config.toml
