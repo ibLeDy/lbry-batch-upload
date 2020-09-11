@@ -2,6 +2,7 @@ import os
 import time
 
 import toml
+import unidecode
 import pyautogui
 import pyperclip
 from selenium import webdriver
@@ -265,12 +266,14 @@ def get_sanitized_claim_name(song_name):
     return sanitized_name.lower().split(' - ', 1)[-1]
 
 
-def get_song_data(song_name):
+def get_song_data(song_name):  # TODO: move to `upload_page`
     path_head, album = os.path.split(FOLDER_PATH)
     _, artist = os.path.split(path_head)
+    # FIXME: `upload_title` can contain multiple `-`
     upload_title = f'{os.path.splitext(song_name)[0]} - {album} - {artist}'
-    sanitized_claim_name = get_sanitized_claim_name(song_name)
-    claim_name = os.path.splitext(sanitized_claim_name)[0].replace(' ', '-')
+    claim_name = unidecode.unidecode(
+        os.path.splitext(get_sanitized_claim_name(song_name))[0].replace(' ', '-')
+    )
 
     return {
         'album': album,
