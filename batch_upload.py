@@ -1,7 +1,7 @@
 import os
 import time
-import toml
 
+import toml
 import pyautogui
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -41,7 +41,7 @@ class BasePage:
             self.__banner().click()
             self.__banner().click()
         except NoSuchElementException:
-            print('No banner found')
+            pass
 
     def scroll_page_to_top(self):
         self.driver.execute_script('window.scrollTo(0, 0)')
@@ -63,11 +63,11 @@ class LoginPage(BasePage):
     def load_page(self):
         self.driver.get('https://lbry.tv/$/signin')
 
-    def login(self, email, password):
-        self.__email_field().send_keys(email)
+    def login(self):
+        self.__email_field().send_keys(EMAIL)
         self.__signin_button().click()
         time.sleep(0.5)
-        self.__password_field().send_keys(password)
+        self.__password_field().send_keys(PASSWORD)
         self.__continue_button().click()
 
 
@@ -181,7 +181,7 @@ class UploadPage(BasePage):
     def fill_deposit(self):
         content_bid = self.__deposit()
         content_bid.clear()
-        content_bid.send_keys(str(DEPOSIT))  # NOTE: selenium wants an string
+        content_bid.send_keys(str(DEPOSIT))
 
     def select_price(self):
         self.__price_button().click()
@@ -189,7 +189,7 @@ class UploadPage(BasePage):
     def fill_price(self):
         price = self.__price()
         price.clear()
-        price.send_keys(str(PRICE))  # NOTE: selenium wants an string
+        price.send_keys(str(PRICE))
 
     def open_additional_options(self):
         self.__options_button().click()
@@ -213,7 +213,7 @@ class UploadPage(BasePage):
         self.__publish_next_button().click()
 
     @close_success_popup
-    def upload_song(self, song_data, first_song=False):
+    def upload_song(self, song_data, first_song):
         self.choose_file(song_data['song_name'])
         self.fill_title(song_data['upload_title'])
         self.fill_description()
@@ -243,13 +243,14 @@ class UploadPage(BasePage):
         time.sleep(5)  # NOTE: so they finish uploading in order
 
 
-def get_song_names(folder_path, audio_format, excluded):
+def get_song_names():  # TODO: revisit conditions
     song_names = []
-    for file in os.listdir(folder_path):
-        if os.path.splitext(file)[-1] == audio_format:
-            if file not in excluded:
+    for file in os.listdir(FOLDER_PATH):
+        if os.path.splitext(file)[-1] == AUDIO_FORMAT:
+            if file not in EXCLUDED:
                 song_names.append(file)
 
+    song_names.sort()
     return song_names
 
 
@@ -265,8 +266,8 @@ def get_sanitized_claim_name(song_name):
     return sanitized_name.lower().split(' - ', 1)[-1]
 
 
-def get_song_data(song_name, folder_path):
-    path_head, album = os.path.split(folder_path)
+def get_song_data(song_name):
+    path_head, album = os.path.split(FOLDER_PATH)
     _, artist = os.path.split(path_head)
     upload_title = f'{os.path.splitext(song_name)[0]} - {album} - {artist}'
     sanitized_claim_name = get_sanitized_claim_name(song_name)
@@ -287,25 +288,26 @@ if __name__ == '__main__':
 
     login_page = LoginPage(driver)
     login_page.load_page()
-    login_page.login(EMAIL, PASSWORD)
+    login_page.login()
     login_page.close_banners()
 
     upload_page = UploadPage(driver)
     upload_page.load_page()
 
-    songs = get_song_names(FOLDER_PATH, AUDIO_FORMAT, EXCLUDED)
+    songs = get_song_names()
     song_count = len(songs)
 
     while len(songs) > 0:
         # From last to first so they are ordered on the feed
         song_name = songs.pop()
-        song_data = get_song_data(song_name, FOLDER_PATH)
+        song_data = get_song_data(song_name)
 
         # Click "Additional Options" only on the first publish
+        first_song = False
         if len(songs) + 1 == song_count:
-            upload_page.upload_song(song_data, first_song=True)
-        else:
-            upload_page.upload_song(song_data)
+            first_song = True
+
+        upload_page.upload_song(song_data, first_song=first_song)
 
         # Inform the user, useful for excluding songs if the script crashes
         print('[PUBLISHED]', song_name)
