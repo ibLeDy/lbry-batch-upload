@@ -63,6 +63,12 @@ the edges and neither well thought nor complete.
 
 ### Changelog
 
+- September 10, 2020:
+  - Closing the `success` popup is more reliable
+  - Selecting files is more reliable
+  - Fix outdated selectors
+  - Use ASCII in claim name
+
 - July 24, 2020:
   - Changelog is now in reverse chronological order
 
