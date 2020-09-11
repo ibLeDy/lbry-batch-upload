@@ -1,4 +1,4 @@
-# LBRY Batch Upload - WIP
+# WIP - LBRY Batch Upload
 
 Automate uploading entire folders to [lbry.tv] using [selenium] and [pyautogui].
 
@@ -43,35 +43,35 @@ the edges and neither well thought nor complete.
 
 - Create a virtual enviroment and activate it
 
-    ```sh
-    python3 -m virtualenv .venv && source .venv/bin/activate
-    ```
+  ```sh
+  python3 -m virtualenv .venv && source .venv/bin/activate
+  ```
 
 - Install the requirements
 
-    ```sh
-    pip install -r requirements.txt
-    ```
+  ```sh
+  pip install -r requirements.txt
+  ```
 
 - Fill `config.toml`
 
 - Run the script
 
-    ```sh
-    python batch_upload.py
-    ```
+  ```sh
+  python batch_upload.py
+  ```
 
 ### Changelog
 
-- 2020-07-24:
+- July 24, 2020:
   - Changelog is now in reverse chronological order
 
-- 2020-06-17:
+- June 17, 2020:
   - Use toml instead of json for config file: `config.json -> config.toml`
   - Define constants to catch basic config errors
   - Replace `None` checks with existence ones
 
-- 2020-06-16:
+- June 16, 2020:
   - Rename settings file: `upload_settings.json -> config.json`
   - Handle closing success upload popup with a custom decorator
   - Add missing decorator to some functions
@@ -79,10 +79,10 @@ the edges and neither well thought nor complete.
   - Separate clicking and filling info so we can resume when a popup was detected
   - Add sleep before uploading next file so they get uploaded in order
 
-- 2020-06-13:
+- June 13, 2020:
   - Handle `price` option, only LBC atm
 
-- 2020-06-12:
+- June 12, 2020:
   - Change webdriver yo improve speed: `Firefox -> Chrome`
   - Change settings file name: `settings.json -> upload_settings.json`
   - Move credentials from `.env` to `upload_settings.json`
