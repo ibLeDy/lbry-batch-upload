@@ -1,7 +1,6 @@
 import os
 import time
 import toml
-from functools import wraps
 
 import pyautogui
 from selenium import webdriver
@@ -44,6 +43,9 @@ class BasePage:
         except NoSuchElementException:
             print('No banner found')
 
+    def scroll_page_to_top(self):
+        self.driver.execute_script('window.scrollTo(0, 0)')
+
 
 class LoginPage(BasePage):
     def __email_field(self):
@@ -69,17 +71,16 @@ class LoginPage(BasePage):
         self.__continue_button().click()
 
 
-def close_success_popup(method):
-    @wraps(method)
-    def method_wrapper(self, *method_args, **method_kwargs):
+def close_success_popup(func):
+    def wrapper(self, *args, **kwargs):
         try:
-            method(self, *method_args, **method_kwargs)
+            func(self, *args, **kwargs)
         except ElementClickInterceptedException:
             self.driver.find_element_by_css_selector('[aria-label="Close"]').click()
-            time.sleep(0.5)
-            method(self, *method_args, **method_kwargs)
+            self.scroll_page_to_top()
+            func(self, *args, **kwargs)
 
-    return method_wrapper
+    return wrapper
 
 
 class UploadPage(BasePage):
@@ -141,7 +142,6 @@ class UploadPage(BasePage):
     def load_page(self):
         self.driver.get('https://lbry.tv/$/publish')
 
-    @close_success_popup
     def choose_file(self, song_name):
         self.__file_button().click()
 
@@ -155,71 +155,56 @@ class UploadPage(BasePage):
         pyautogui.press('enter')
         time.sleep(1)
 
-    @close_success_popup
     def fill_title(self, upload_title):
         self.__title().send_keys(upload_title)
 
-    @close_success_popup
     def fill_description(self):
         self.__description().send_keys(DESCRIPTION)
 
-    @close_success_popup
     def select_thumbnail_url(self):
         self.__thumbnail_button().click()
 
-    @close_success_popup
     def fill_thumbnail_url(self):
         self.__thumbnail().send_keys(THUMBNAIL_URL)
 
-    @close_success_popup
     def fill_tags(self):
         self.__tags().send_keys(','.join(TAGS), Keys.ENTER)
 
-    @close_success_popup
     def select_channel(self):
         Select(self.__channel_list()).select_by_value(CHANNEL)
 
-    @close_success_popup
     def fill_claim_name(self, claim_name):
         claim = self.__claim_url()
         claim.clear()
         claim.send_keys(claim_name)
 
-    @close_success_popup
     def fill_deposit(self):
         content_bid = self.__deposit()
         content_bid.clear()
         content_bid.send_keys(str(DEPOSIT))  # NOTE: selenium wants an string
 
-    @close_success_popup
     def select_price(self):
         self.__price_button().click()
 
-    @close_success_popup
     def fill_price(self):
         price = self.__price()
         price.clear()
         price.send_keys(str(PRICE))  # NOTE: selenium wants an string
 
-    @close_success_popup
     def open_additional_options(self):
         self.__options_button().click()
 
-    @close_success_popup
     def select_language(self):
         Select(self.__language_list()).select_by_value(LANGUAGE)
 
-    @close_success_popup
     def select_license(self):
         Select(self.__license_list()).select_by_value(LICENSE_TYPE)
 
-    @close_success_popup
     def fill_license(self):
         copyright_notice = self.__copyright_notice()
         copyright_notice.clear()
         copyright_notice.send_keys(LICENSE_NOTICE)
 
-    @close_success_popup
     def publish(self):
         self.__publish_button().click()
 
@@ -227,6 +212,7 @@ class UploadPage(BasePage):
     def continue_publishing(self):
         self.__publish_next_button().click()
 
+    @close_success_popup
     def upload_song(self, song_data, first_song=False):
         self.choose_file(song_data['song_name'])
         self.fill_title(song_data['upload_title'])
