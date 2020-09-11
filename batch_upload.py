@@ -86,7 +86,7 @@ def close_success_popup(func):
 
 class UploadPage(BasePage):
     def __file_button(self):
-        return self.driver.find_element_by_css_selector('[aria-label="Choose File"]')
+        return self.driver.find_element_by_css_selector('[aria-label="Browse"]')
 
     def __title(self):
         return self.driver.find_element_by_css_selector('#content_title')
@@ -106,7 +106,7 @@ class UploadPage(BasePage):
         return self.driver.find_element_by_css_selector('.tag__input')
 
     def __channel_list(self):
-        return self.driver.find_element_by_css_selector('#channel')
+        return self.driver.find_element_by_css_selector('#ID_FF_SELECT_CHANNEL')
 
     def __claim_url(self):
         return self.driver.find_element_by_css_selector('#content_name')
@@ -135,10 +135,10 @@ class UploadPage(BasePage):
         return self.driver.find_element_by_css_selector('#copyright-notice')
 
     def __publish_button(self):
-        return self.driver.find_element_by_css_selector('[aria-label="Publish"]')
+        return self.driver.find_element_by_css_selector('[aria-label="Upload"]')
 
     def __publish_next_button(self):
-        return self.driver.find_element_by_css_selector('a[href="/$/publish"]')
+        return self.driver.find_element_by_css_selector('a[href="/$/upload"]')
 
     def load_page(self):
         self.driver.get('https://lbry.tv/$/publish')
