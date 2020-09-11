@@ -3,6 +3,7 @@ import time
 
 import toml
 import pyautogui
+import pyperclip
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
@@ -142,16 +143,14 @@ class UploadPage(BasePage):
     def load_page(self):
         self.driver.get('https://lbry.tv/$/publish')
 
-    def choose_file(self, song_name):
+    def choose_file(self, song_name):  # NOTE: designed for nautilus
         self.__file_button().click()
-
+        pyperclip.copy(os.path.join(FOLDER_PATH, song_name))
         time.sleep(1)
-        file_path = f'{FOLDER_PATH}/{song_name}'
-        for folder in file_path.lstrip(os.sep).split(os.sep):
-            pyautogui.hotkey('divide')
-            pyautogui.write(folder)
-
-        time.sleep(0.5)  # FIXME: slow computers might need more time
+        pyautogui.hotkey('divide')
+        pyautogui.press('backspace')
+        pyautogui.hotkey('ctrl', 'v')
+        time.sleep(0.5)
         pyautogui.press('enter')
         time.sleep(1)
 
