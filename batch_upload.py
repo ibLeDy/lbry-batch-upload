@@ -12,28 +12,43 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import ElementClickInterceptedException
 
 
-with open('config.toml', 'r') as f:
-    config = toml.load(f)
+class Config:
+    def __init__(self, path):
+        self.parse_config(path)
 
-EMAIL = config['user']['email']
-PASSWORD = config['user']['password']
-FOLDER_PATH = config['files']['folder_path']
-AUDIO_FORMAT = config['files']['audio_format']
-EXCLUDED = config['files']['excluded']
-DESCRIPTION = config['upload']['description']
-THUMBNAIL_URL = config['upload']['thumbnail_url']
-TAGS = config['upload']['tags']
-CHANNEL = config['upload']['channel']
-DEPOSIT = config['upload']['deposit']
-PRICE = config['upload']['price']
-LANGUAGE = config['upload']['language']
-LICENSE_TYPE = config['upload']['license_type']
-LICENSE_NOTICE = config['upload']['license_notice']
+    def _parse_user_fields(self, user_config):
+        self.email = user_config['email']
+        self.password = user_config['password']
+
+    def _parse_files_fields(self, files_config):
+        self.folder_path = files_config['folder_path']
+        self.audio_format = files_config['audio_format']
+        self.excluded = files_config['excluded']
+
+    def _parse_upload_fields(self, upload_config):
+        self.description = upload_config['description']
+        self.thumbnail_url = upload_config['thumbnail_url']
+        self.tags = upload_config['tags']
+        self.channel = upload_config['channel']
+        self.deposit = upload_config['deposit']
+        self.price = upload_config['price']
+        self.language = upload_config['language']
+        self.license_type = upload_config['license_type']
+        self.license_notice = upload_config['license_notice']
+
+    def parse_config(self, path):
+        with open(path, 'r') as f:
+            config = toml.load(f)
+
+        self._parse_user_fields(config['user'])
+        self._parse_files_fields(config['files'])
+        self._parse_upload_fields(config['upload'])
 
 
 class BasePage:
-    def __init__(self, driver):
+    def __init__(self, driver, config):
         self.driver = driver
+        self.config = config
 
     def _banner(self):
         return self.driver.find_element_by_css_selector('button.nag__button')
@@ -66,10 +81,10 @@ class LoginPage(BasePage):
         self.driver.get('https://lbry.tv/$/signin')
 
     def login(self):
-        self._email_field().send_keys(EMAIL)
+        self._email_field().send_keys(self.config.email)
         self._signin_button().click()
         time.sleep(0.5)
-        self._password_field().send_keys(PASSWORD)
+        self._password_field().send_keys(self.config.password)
         self._continue_button().click()
 
 
@@ -146,7 +161,7 @@ class UploadPage(BasePage):
 
     def choose_file(self, song_name):  # NOTE: designed for nautilus
         self._file_button().click()
-        pyperclip.copy(os.path.join(FOLDER_PATH, song_name))
+        pyperclip.copy(os.path.join(self.config.folder_path, song_name))
         time.sleep(1)
         pyautogui.hotkey('divide')
         pyautogui.press('backspace')
@@ -159,19 +174,19 @@ class UploadPage(BasePage):
         self._title().send_keys(upload_title)
 
     def fill_description(self):
-        self._description().send_keys(DESCRIPTION)
+        self._description().send_keys(self.config.description)
 
     def select_thumbnail_url(self):
         self._thumbnail_button().click()
 
     def fill_thumbnail_url(self):
-        self._thumbnail().send_keys(THUMBNAIL_URL)
+        self._thumbnail().send_keys(self.config.thumbnail_url)
 
     def fill_tags(self):
-        self._tags().send_keys(','.join(TAGS), Keys.ENTER)
+        self._tags().send_keys(','.join(self.config.tags), Keys.ENTER)
 
     def select_channel(self):
-        Select(self._channel_list()).select_by_value(CHANNEL)
+        Select(self._channel_list()).select_by_value(self.config.channel)
 
     def fill_claim_name(self, claim_name):
         claim = self._claim_url()
@@ -181,7 +196,7 @@ class UploadPage(BasePage):
     def fill_deposit(self):
         content_bid = self._deposit()
         content_bid.clear()
-        content_bid.send_keys(str(DEPOSIT))
+        content_bid.send_keys(str(self.config.deposit))
 
     def select_price(self):
         self._price_button().click()
@@ -189,21 +204,21 @@ class UploadPage(BasePage):
     def fill_price(self):
         price = self._price()
         price.clear()
-        price.send_keys(str(PRICE))
+        price.send_keys(str(self.config.price))
 
     def open_additional_options(self):
         self._options_button().click()
 
     def select_language(self):
-        Select(self._language_list()).select_by_value(LANGUAGE)
+        Select(self._language_list()).select_by_value(self.config.language)
 
     def select_license(self):
-        Select(self._license_list()).select_by_value(LICENSE_TYPE)
+        Select(self._license_list()).select_by_value(self.config.license_type)
 
     def fill_license(self):
         copyright_notice = self._copyright_notice()
         copyright_notice.clear()
-        copyright_notice.send_keys(LICENSE_NOTICE)
+        copyright_notice.send_keys(self.config.license_notice)
 
     def publish(self):
         self._publish_button().click()
@@ -223,10 +238,10 @@ class UploadPage(BasePage):
         self.select_channel()
         self.fill_claim_name(song_data['claim_name'])
 
-        if DEPOSIT:
+        if self.config.deposit:
             self.fill_deposit()
 
-        if PRICE:
+        if self.config.price:
             self.select_price()
             self.fill_price()
 
@@ -235,19 +250,22 @@ class UploadPage(BasePage):
 
         self.select_language()
 
-        if LICENSE_TYPE:  # TODO: handle `LICENSE_TYPE != "copyright"`
+        # TODO: handle `LICENSE_TYPE != "copyright"`
+        if self.config.license_type == 'copyright':
             self.select_license()
             self.fill_license()
+        elif self.config.license_type:
+            self.select_license()
 
         self.publish()
         time.sleep(5)  # NOTE: so they finish uploading in order
 
 
-def get_song_names():  # TODO: revisit conditions
+def get_song_names(folder_path, audio_format, excluded):  # TODO: revisit conditions
     song_names = []
-    for file in os.listdir(FOLDER_PATH):
-        if os.path.splitext(file)[-1] == AUDIO_FORMAT:
-            if file not in EXCLUDED:
+    for file in os.listdir(folder_path):
+        if os.path.splitext(file)[-1] == audio_format:
+            if file not in excluded:
                 song_names.append(file)
 
     song_names.sort()
@@ -266,8 +284,8 @@ def get_sanitized_claim_name(song_name):
     return sanitized_name.lower().split(' - ', 1)[-1]
 
 
-def get_song_data(song_name):  # TODO: move to `upload_page`
-    path_head, album = os.path.split(FOLDER_PATH)
+def get_song_data(folder_path, song_name):  # TODO: move to `upload_page`
+    path_head, album = os.path.split(folder_path)
     _, artist = os.path.split(path_head)
     # FIXME: `upload_title` can contain multiple `-`
     upload_title = f'{os.path.splitext(song_name)[0]} - {album} - {artist}'
@@ -286,23 +304,25 @@ def get_song_data(song_name):  # TODO: move to `upload_page`
 
 if __name__ == '__main__':
     driver = webdriver.Chrome()
-    driver.implicitly_wait(10)
+    driver.implicitly_wait(5)
 
-    login_page = LoginPage(driver)
+    config = Config('config.toml')
+
+    login_page = LoginPage(driver, config)
     login_page.load_page()
     login_page.login()
     login_page.close_banners()
 
-    upload_page = UploadPage(driver)
+    upload_page = UploadPage(driver, config)
     upload_page.load_page()
 
-    songs = get_song_names()
+    songs = get_song_names(config.folder_path, config.audio_format, config.excluded)
     song_count = len(songs)
 
     while len(songs) > 0:
         # From last to first so they are ordered on the feed
         song_name = songs.pop()
-        song_data = get_song_data(song_name)
+        song_data = get_song_data(config.folder_path, song_name)
 
         # Click "Additional Options" only on the first publish
         first_song = False
