@@ -63,6 +63,9 @@ the edges and neither well thought nor complete.
 
 ### Changelog
 
+- September 14, 2020:
+  - Basic validation for `language` and `license_type`
+
 - September 10, 2020:
   - Closing the `success` popup is more reliable
   - Selecting files is more reliable

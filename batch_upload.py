@@ -210,10 +210,32 @@ class UploadPage(BasePage):
         self._options_button().click()
 
     def select_language(self):
-        Select(self._language_list()).select_by_value(self.config.language)
+        language_list_element = self._language_list()
+        available_languages = [
+            element.get_attribute('value')
+            for element in language_list_element.find_elements_by_tag_name('option')
+        ]
+        if self.config.language not in available_languages:
+            raise ValueError(
+                'Language {!r} is not a valid option -> {}'.format(
+                    self.config.language, available_languages
+                )
+            )
+        Select(language_list_element).select_by_value(self.config.language)
 
     def select_license(self):
-        Select(self._license_list()).select_by_value(self.config.license_type)
+        license_list_element = self._license_list()
+        available_licenses = [
+            element.get_attribute('value')
+            for element in license_list_element.find_elements_by_tag_name('option')
+        ]
+        if self.config.license_type not in available_licenses:
+            raise ValueError(
+                'License {!r} is not a valid option -> {}'.format(
+                    self.config.license_type, available_licenses
+                )
+            )
+        Select(license_list_element).select_by_value(self.config.license_type)
 
     def fill_license(self):
         copyright_notice = self._copyright_notice()
@@ -250,12 +272,11 @@ class UploadPage(BasePage):
 
         self.select_language()
 
-        # TODO: handle `LICENSE_TYPE != "copyright"`
+        self.select_license()
+        # FIXME: do not hardcode values
+        # TODO: handle `license_type == 'other'`
         if self.config.license_type == 'copyright':
-            self.select_license()
             self.fill_license()
-        elif self.config.license_type:
-            self.select_license()
 
         self.publish()
         time.sleep(5)  # NOTE: so they finish uploading in order
