@@ -58,7 +58,7 @@ the edges and neither well thought nor complete.
 - Run the script
 
   ```sh
-  python batch_upload.py
+  python lbry_batch_upload.py
   ```
 
 ### Changelog
