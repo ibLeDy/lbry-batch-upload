@@ -5,6 +5,7 @@ password = ""
 [files]
 folder_path = "/home/bledy/Music/Red Hot Chili Peppers/Californication"
 audio_format = ".flac"
+thumbnail_format = ".jpg"
 excluded = [
     "album_info.txt",
 ]
@@ -12,12 +13,10 @@ excluded = [
 [upload]
 description = """
 """
-thumbnail_url = "https://thumbs.spee.ch/view/4/86562ae3-125d-4cf6-8ca6-a2a83b7c2d78.jpg"
 tags = [
     "music",
     "art",
     "flac",
-    "rhcp",
     "red hot chili peppers",
 ]
 channel = "@bLeDy"
