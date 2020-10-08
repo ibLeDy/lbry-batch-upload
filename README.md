@@ -53,7 +53,7 @@ the edges and neither well thought nor complete.
   pip install -r requirements.txt
   ```
 
-- Fill `config.toml`
+- Fill [config.toml]
 
 - Run the script
 
