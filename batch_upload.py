@@ -27,7 +27,6 @@ class Config:
 
     def _parse_upload_fields(self, upload_config):
         self.description = upload_config['description']
-        self.thumbnail_url = upload_config['thumbnail_url']
         self.tags = upload_config['tags']
         self.channel = upload_config['channel']
         self.deposit = upload_config['deposit']
@@ -156,6 +155,16 @@ class UploadPage(BasePage):
     def _publish_button(self):
         return self.driver.find_element_by_css_selector('[aria-label="Upload"]')
 
+    def _skip_preview_checkbox(self):
+        return self.driver.find_element_by_xpath(
+            '/html/body/div[4]/div/div/form/section/div[3]/div[2]/label'
+        )
+
+    def _upload_button(self):
+        return self.driver.find_element_by_xpath(
+            '/html/body/div[4]/div/div/form/section/div[3]/div[1]/button[1]'
+        )
+
     def _publish_next_button(self):
         return self.driver.find_element_by_css_selector('a[href="/$/upload"]')
 
@@ -248,6 +257,10 @@ class UploadPage(BasePage):
     def publish(self):
         self._publish_button().click()
 
+    def confirm_upload(self):
+        self._skip_preview_checkbox().click()
+        self._upload_button().click()
+
     @close_success_popup
     def continue_publishing(self):
         self._publish_next_button().click()
@@ -282,6 +295,8 @@ class UploadPage(BasePage):
             self.fill_license()
 
         self.publish()
+        if first_song:
+            self.confirm_upload()
         time.sleep(5)  # NOTE: so they finish uploading in order
 
 
