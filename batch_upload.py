@@ -339,8 +339,9 @@ def get_sanitized_claim_name(song_name):
 def get_song_data(folder_path, song_name):  # TODO: move to `upload_page`
     path_head, album = os.path.split(folder_path)
     _, artist = os.path.split(path_head)
+    title = os.path.splitext(song_name)[0].replace(' -', '')
     # FIXME: `upload_title` can contain multiple `-`
-    upload_title = f'{os.path.splitext(song_name)[0]} - {album} - {artist}'
+    upload_title = f'{title} - {album} - {artist}'
     claim_name = unidecode.unidecode(
         os.path.splitext(get_sanitized_claim_name(song_name))[0].replace(' ', '-')
     )
