@@ -22,8 +22,11 @@ class Config:
 
     def _parse_files_fields(self, files_config):
         self.folder_path = files_config['folder_path']
-        self.audio_format = files_config['audio_format']
+        self.audio_format = files_config['audio_format']  # FIXME: check dot
+        self.thumbnail_format = files_config['thumbnail_format']  # FIXME: check dot
         self.excluded = files_config['excluded']
+        self.album_name = os.path.split(self.folder_path)[-1]
+        self.thumbnail_name = f'{self.album_name}{self.thumbnail_format}'
 
     def _parse_upload_fields(self, upload_config):
         self.description = upload_config['description']
@@ -113,12 +116,15 @@ class UploadPage(BasePage):
         return self.driver.find_element_by_css_selector('#content_description')
 
     def _thumbnail_button(self):
-        return self.driver.find_element_by_css_selector(
-            '[aria-label="Enter a thumbnail URL"]'
+        return self.driver.find_element_by_xpath(
+            '//*[@id="app"]/div/div[1]/main/div/div/section[2]/'
+            'div/div/fieldset-section/input-submit/button'
         )
 
-    def _thumbnail(self):
-        return self.driver.find_element_by_css_selector('#content_thumbnail')
+    def _thumbnail_upload_button(self):
+        return self.driver.find_element_by_xpath(
+            '/html/body/div[4]/div/div/div/button[1]'
+        )
 
     def _tags(self):
         return self.driver.find_element_by_css_selector('.tag__input')
@@ -188,11 +194,19 @@ class UploadPage(BasePage):
     def fill_description(self):
         self._description().send_keys(self.config.description)
 
-    def select_thumbnail_url(self):
-        self._thumbnail_button().click()
-
-    def fill_thumbnail_url(self):
-        self._thumbnail().send_keys(self.config.thumbnail_url)
+    def choose_thumbnail(self, thumbnail_name):  # NOTE: designed for nautilus
+        path = os.path.join(self.config.folder_path, thumbnail_name)
+        if os.path.isfile(path):
+            self._thumbnail_button().click()
+            pyperclip.copy(path)
+            time.sleep(1)
+            pyautogui.hotkey('divide')
+            pyautogui.press('backspace')
+            pyautogui.hotkey('ctrl', 'v')
+            time.sleep(0.5)
+            pyautogui.press('enter')
+            time.sleep(1)
+            self._thumbnail_upload_button().click()
 
     def fill_tags(self):
         self._tags().send_keys(','.join(self.config.tags), Keys.ENTER)
@@ -270,8 +284,7 @@ class UploadPage(BasePage):
         self.choose_file(song_data['song_name'])
         self.fill_title(song_data['upload_title'])
         self.fill_description()
-        self.select_thumbnail_url()
-        self.fill_thumbnail_url()
+        self.choose_thumbnail(self.config.thumbnail_name)
         self.fill_tags()
         self.select_channel()
         self.fill_claim_name(song_data['claim_name'])
