@@ -5,7 +5,13 @@ Automate uploading entire folders to [lbry.tv] using [selenium] and [pyautogui].
 Made mostly to practice Selenium, it is designed for music albums, still rough around
 the edges and neither well thought nor complete.
 
-## User Requirements
+## Demo
+
+<div align="center">
+  <img src="demo.gif" alt="Demo gif">
+</div>
+
+## Required
 
 - Fill [config.toml] before running the script
 - Provided folder path must be an absolute one
@@ -61,7 +67,7 @@ the edges and neither well thought nor complete.
   python lbry_batch_upload.py
   ```
 
-### Changelog
+## Changelog
 
 - October 8, 2020:
   - Fix outdated selectors
@@ -107,27 +113,6 @@ the edges and neither well thought nor complete.
   - Implement PageObject pattern
   - Remove `price` from settings until i manage to circunvent an obstructing label
   - Bump wait time before and after file selection to 1s
-
-### TODO
-
-- [x] Implement PageObject pattern
-- [x] Keep the upload page on sight when uploading the last file
-- [x] Better explanation of usage and capabilities _(not good enough)_
-- [x] Handle price option _(only for LBC)_
-- [x] Add example credentials file or move them to `config.toml` _(they got moved)_
-- [x] Validate `config.toml` before uploading any file _(parsing and key existence)_
-- [x] Better way of setting a description _(toml supports multi-line strings)_
-- [ ] Add configuration guide to `README.md` with all valid values for `config.toml`
-- [ ] Check that all value types are correct in `config.toml`
-- [ ] Warn about naming issues before uploading any file (mainly punctuation)
-- [ ] Prepend artist, album and title info to description string
-- [ ] Follow prefered selector order (`id > name > links text > css > xpath`)
-- [ ] Prevent or react to "failed to fetch" error on login
-- [ ] Add argument to enable dark mode on the webpage
-- [ ] Implement custom error messages
-- [ ] Implement waits
-- [ ] Type hints
-- [ ] Unit tests
 
 [lbry.tv]: https://lbry.tv
 [selenium]: https://github.com/SeleniumHQ/selenium
