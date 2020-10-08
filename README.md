@@ -9,8 +9,8 @@ the edges and neither well thought nor complete.
 
 - Fill [config.toml] before running the script
 - Provided folder path must be an absolute one
-- Available thumbnail url
 - Song titles must match the format `{number} - {title}.{format}`
+- If there's a thumbnail named after the album, it will be used
 - Folder structure as follows
 
 > Files should be in a folder which is named after the album, inside a
@@ -43,7 +43,7 @@ the edges and neither well thought nor complete.
 
 - Create a virtual enviroment and activate it
 
-  ```sh
+  ```text
   python3 -m virtualenv .venv && source .venv/bin/activate
   ```
 
@@ -63,11 +63,19 @@ the edges and neither well thought nor complete.
 
 ### Changelog
 
+- October 8, 2020:
+  - Fix outdated selectors
+  - Account for lbry's new upload confirmation popup
+  - Use thumbnail file inside the album folder instead of a url
+  - Delete `thumbnail_url` from upload section in config
+  - Add `thumbnail_format` to files section in config
+  - Don't use `-` separator between song number and name
+
 - September 14, 2020:
   - Basic validation for `language` and `license_type`
 
 - September 10, 2020:
-  - Closing the `success` popup is more reliable
+  - Closing the success popup is more reliable
   - Selecting files is more reliable
   - Fix outdated selectors
   - Use ASCII in claim name
