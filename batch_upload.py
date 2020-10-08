@@ -72,7 +72,7 @@ class LoginPage(BasePage):
         return self.driver.find_element_by_css_selector('#password')
 
     def _signin_button(self):
-        return self.driver.find_element_by_css_selector('[aria-label="Sign In"]')
+        return self.driver.find_element_by_css_selector('[aria-label="Log In"]')
 
     def _continue_button(self):
         return self.driver.find_element_by_css_selector('[aria-label="Continue"]')
@@ -102,7 +102,10 @@ def close_success_popup(func):
 
 class UploadPage(BasePage):
     def _file_button(self):
-        return self.driver.find_element_by_css_selector('[aria-label="Browse"]')
+        return self.driver.find_element_by_xpath(
+            '//*[@id="app"]/div/div[1]/main/div/section[1]/'
+            'div[2]/fieldset-section[2]/input-submit/button'
+        )
 
     def _title(self):
         return self.driver.find_element_by_css_selector('#content_title')
