@@ -1,4 +1,4 @@
-# WIP - LBRY Batch Upload
+# LBRY Batch Upload
 
 Automate uploading entire folders to [lbry.tv] using [selenium] and [pyautogui].
 
@@ -46,6 +46,12 @@ the edges and neither well thought nor complete.
 ```
 
 ## Usage
+
+- Clone the repo
+
+  ```text
+  git clone https://github.com/ibLeDy/lbry-batch-upload.git && cd lbry-batch-upload
+  ```
 
 - Create a virtual enviroment and activate it
 
@@ -113,6 +119,10 @@ the edges and neither well thought nor complete.
   - Implement PageObject pattern
   - Remove `price` from settings until i manage to circunvent an obstructing label
   - Bump wait time before and after file selection to 1s
+
+<div align="right">
+  <b><a href="#lbry-batch-upload">↥ back to top</a></b>
+</div>
 
 [lbry.tv]: https://lbry.tv
 [selenium]: https://github.com/SeleniumHQ/selenium
