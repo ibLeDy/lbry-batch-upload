@@ -65,6 +65,9 @@ class BasePage:
     def scroll_page_to_top(self):
         self.driver.execute_script('window.scrollTo(0, 0)')
 
+    def scroll_page_to_bottom(self):
+        self.driver.execute_script('window.scrollTo(0, document.body.scrollHeight)')
+
 
 class LoginPage(BasePage):
     def _email_field(self):
@@ -307,6 +310,7 @@ class UploadPage(BasePage):
         if self.config.license_type == 'copyright':
             self.fill_license()
 
+        self.scroll_page_to_bottom()
         self.publish()
         if first_song:
             self.confirm_upload()
