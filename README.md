@@ -1,62 +1,66 @@
-# LBRY Batch Upload
-
-Automate uploading entire folders to [lbry.tv] using [selenium] and [pyautogui].
-
-Made mostly to practice Selenium, it is designed for music albums, still rough around
-the edges and neither well thought nor complete.
-
-## Demo
+<div align="center">
+  <h1>LBRY Batch Upload</h1>
+  <p>Automate uploading entire folders to <a href="https://lbry.tv" target="_blank">lbry.tv</a></p>
+</div>
 
 <div align="center">
   <img src="demo.gif" alt="Demo gif">
 </div>
 
-## Required
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Usage](#usage)
+- [Changelog](#changelog)
+
+## Prerequisites
 
 - Fill [config.toml] before running the script
-- Provided folder path must be an absolute one
+- Use an absolute `folder_path`
 - Song titles must match the format `{number} - {title}.{format}`
-- If there's a thumbnail named after the album, it will be used
+- The thumbnail must have the same name as the album
 - Folder structure as follows
 
-> Files should be in a folder which is named after the album, inside a
-> folder that is named after the artist.
+  > Files should be in a folder which is named after the album, inside a
+  > folder that is named after the artist.
 
-```bash
-.
-└── Red Hot Chili Peppers
-    └── Californication
-        ├── 01 - Around the World.flac
-        ├── 02 - Parallel Universe.flac
-        ├── 03 - Scar Tissue.flac
-        ├── 04 - Otherside.flac
-        ├── 05 - Get on Top.flac
-        ├── 06 - Californication.flac
-        ├── 07 - Easily.flac
-        ├── 08 - Porcelain.flac
-        ├── 09 - Emit Remmus.flac
-        ├── 10 - I Like Dirt.flac
-        ├── 11 - This Velvet Glove.flac
-        ├── 12 - Savior.flac
-        ├── 13 - Purple Stain.flac
-        ├── 14 - Right on Time.flac
-        ├── 15 - Road Trippin.flac
-        ├── album_info.txt
-        └── Californication.jpg
-```
+  ```bash
+  .
+  └── Red Hot Chili Peppers
+      └── Californication
+          ├── 01 - Around the World.flac
+          ├── 02 - Parallel Universe.flac
+          ├── 03 - Scar Tissue.flac
+          ├── 04 - Otherside.flac
+          ├── 05 - Get on Top.flac
+          ├── 06 - Californication.flac
+          ├── 07 - Easily.flac
+          ├── 08 - Porcelain.flac
+          ├── 09 - Emit Remmus.flac
+          ├── 10 - I Like Dirt.flac
+          ├── 11 - This Velvet Glove.flac
+          ├── 12 - Savior.flac
+          ├── 13 - Purple Stain.flac
+          ├── 14 - Right on Time.flac
+          ├── 15 - Road Trippin.flac
+          ├── album_info.txt
+          └── Californication.jpg
+  ```
 
 ## Usage
 
 - Clone the repo
 
   ```text
-  git clone https://github.com/ibLeDy/lbry-batch-upload.git && cd lbry-batch-upload
+  git clone https://github.com/ibLeDy/lbry-batch-upload.git && \
+  cd lbry-batch-upload
   ```
 
 - Create a virtual enviroment and activate it
 
   ```text
-  python3 -m virtualenv .venv && source .venv/bin/activate
+  python3 -m virtualenv .venv && \
+  source .venv/bin/activate
   ```
 
 - Install the requirements
@@ -65,7 +69,7 @@ the edges and neither well thought nor complete.
   pip install -r requirements.txt
   ```
 
-- Fill [config.toml]
+- Fill the [config](./config.toml)
 
 - Run the script
 
@@ -123,8 +127,3 @@ the edges and neither well thought nor complete.
 <div align="right">
   <b><a href="#lbry-batch-upload">↥ back to top</a></b>
 </div>
-
-[lbry.tv]: https://lbry.tv
-[selenium]: https://github.com/SeleniumHQ/selenium
-[pyautogui]: https://github.com/asweigart/pyautogui
-[config.toml]: config.toml
