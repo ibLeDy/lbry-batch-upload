@@ -1,6 +1,6 @@
 <div align="center">
   <h1>LBRY Batch Upload</h1>
-  <p>Automate uploading entire folders to <a href="https://lbry.tv" target="_blank">lbry.tv</a></p>
+  <p>Automate uploading entire folders to <a href="https://odysee.com" target="_blank">lbry.tv</a></p>
 </div>
 
 <div align="center">
@@ -18,7 +18,7 @@
 ## Prerequisites
 
 - The [`chromedriver` executable](https://sites.google.com/a/chromium.org/chromedriver/home) needs to be available in `$PATH`.
-- Fill [config.toml] before running the script
+- Fill the [config file](./config.toml) before running the script
 - Use an absolute `folder_path`
 - Song titles must match the format `{number} - {title}.{format}`
 - The thumbnail must have the same name as the album
@@ -118,6 +118,16 @@
     > text for the license notice
 
 ## Changelog
+
+- March 20, 2021:
+  - Fix minor issues so the script works again
+  - Add license
+  - Revamp readme
+    - Add configuration section
+    - Add disclaimer about `Nautilus`
+    - Add warning about `chromedriver`
+  - Bump requirements
+  - Start using `odysee.com`
 
 - October 8, 2020:
   - Fix outdated selectors

@@ -83,7 +83,7 @@ class LoginPage(BasePage):
         return self.driver.find_element_by_css_selector('[aria-label="Continue"]')
 
     def load_page(self):
-        self.driver.get('https://lbry.tv/$/signin')
+        self.driver.get('https://odysee.com/$/signin')
 
     def login(self):
         self._email_field().send_keys(self.config.email)
@@ -191,7 +191,7 @@ class UploadPage(BasePage):
         return self.driver.find_element_by_css_selector('a[href="/$/upload"]')
 
     def load_page(self):
-        self.driver.get('https://lbry.tv/$/publish')
+        self.driver.get('https://odysee.com/$/publish')
 
     def choose_file(self, song_name):  # NOTE: designed for nautilus
         self._file_button().click()
