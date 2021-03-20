@@ -17,6 +17,7 @@
 
 ## Prerequisites
 
+- The [`chromedriver` executable](https://sites.google.com/a/chromium.org/chromedriver/home) needs to be available in `$PATH`.
 - Fill [config.toml] before running the script
 - Use an absolute `folder_path`
 - Song titles must match the format `{number} - {title}.{format}`
