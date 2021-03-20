@@ -12,6 +12,7 @@
 - [Prerequisites](#prerequisites)
 - [Usage](#usage)
 - [Changelog](#changelog)
+- [License](#license)
 
 ## Prerequisites
 
@@ -123,6 +124,11 @@
   - Implement PageObject pattern
   - Remove `price` from settings until i manage to circunvent an obstructing label
   - Bump wait time before and after file selection to 1s
+
+## License
+
+This project is licensed under the terms of the
+[MIT](https://choosealicense.com/licenses/mit/) license.
 
 <div align="right">
   <b><a href="#lbry-batch-upload">↥ back to top</a></b>
