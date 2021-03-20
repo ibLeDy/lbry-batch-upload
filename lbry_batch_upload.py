@@ -108,8 +108,8 @@ def close_success_popup(func):
 class UploadPage(BasePage):
     def _file_button(self):
         return self.driver.find_element_by_xpath(
-            '//*[@id="app"]/div/div[1]/main/div/section[1]/'
-            'div[2]/fieldset-section[2]/input-submit/button'
+            '//*[@id="app"]/div/div[1]/main/div/section[1]/div[2]/'
+            'fieldset-section[2]/input-submit/button'
         )
 
     def _title(self):
@@ -120,8 +120,14 @@ class UploadPage(BasePage):
 
     def _thumbnail_button(self):
         return self.driver.find_element_by_xpath(
-            '//*[@id="app"]/div/div[1]/main/div/div/section[2]/'
-            'div/div/fieldset-section/input-submit/button'
+            '//*[@id="app"]/div/div[1]/main/div/div[2]/'
+            'section[2]/div/div/div/div[2]/div/button'
+        )
+
+    def _thumbnail_browse_button(self):
+        return self.driver.find_element_by_xpath(
+            '//*[@id="app"]/div/div[1]/main/div/div[2]/'
+            'section[2]/div/div/fieldset-section/input-submit/button'
         )
 
     def _thumbnail_upload_button(self):
@@ -133,7 +139,12 @@ class UploadPage(BasePage):
         return self.driver.find_element_by_css_selector('.tag__input')
 
     def _channel_list(self):
-        return self.driver.find_element_by_css_selector('#ID_FF_SELECT_CHANNEL')
+        return self.driver.find_element_by_xpath(
+            '/html/body/div/div/div[1]/main/div/div[1]/button'
+        )
+
+    def _channel_item(self, channel):
+        return self.driver.find_element_by_xpath(f'//div[@data-valuetext="{channel}"]')
 
     def _claim_url(self):
         return self.driver.find_element_by_css_selector('#content_name')
@@ -148,8 +159,8 @@ class UploadPage(BasePage):
         return self.driver.find_element_by_css_selector('#content_cost_amount_amount')
 
     def _options_button(self):
-        return self.driver.find_element_by_css_selector(
-            '[aria-label="Additional Options"]'
+        return self.driver.find_element_by_xpath(
+            '//*[@id="app"]/div/div[1]/main/div/div[2]/section[6]/div/div/button'
         )
 
     def _language_list(self):
@@ -162,7 +173,9 @@ class UploadPage(BasePage):
         return self.driver.find_element_by_css_selector('#copyright-notice')
 
     def _publish_button(self):
-        return self.driver.find_element_by_css_selector('[aria-label="Upload"]')
+        return self.driver.find_element_by_xpath(
+            '//*[@id="app"]/div/div[1]/main/div/section[2]/div/button[1]'
+        )
 
     def _skip_preview_checkbox(self):
         return self.driver.find_element_by_xpath(
@@ -201,6 +214,7 @@ class UploadPage(BasePage):
         path = os.path.join(self.config.folder_path, thumbnail_name)
         if os.path.isfile(path):
             self._thumbnail_button().click()
+            self._thumbnail_browse_button().click()
             pyperclip.copy(path)
             time.sleep(1)
             pyautogui.hotkey('divide')
@@ -215,10 +229,14 @@ class UploadPage(BasePage):
         self._tags().send_keys(','.join(self.config.tags), Keys.ENTER)
 
     def select_channel(self):
-        Select(self._channel_list()).select_by_value(self.config.channel)
+        self._channel_list().click()
+        time.sleep(0.5)
+        self._channel_item(self.config.channel).click()
 
     def fill_claim_name(self, claim_name):
         claim = self._claim_url()
+        claim.clear()
+        time.sleep(0.5)
         claim.clear()
         claim.send_keys(claim_name)
 
@@ -284,13 +302,13 @@ class UploadPage(BasePage):
 
     @close_success_popup
     def upload_song(self, song_data, first_song):
+        self.select_channel()
         self.choose_file(song_data['song_name'])
+        self.fill_claim_name(song_data['claim_name'])
         self.fill_title(song_data['upload_title'])
         self.fill_description()
         self.choose_thumbnail(self.config.thumbnail_name)
         self.fill_tags()
-        self.select_channel()
-        self.fill_claim_name(song_data['claim_name'])
 
         if self.config.deposit:
             self.fill_deposit()

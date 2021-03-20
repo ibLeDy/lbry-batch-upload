@@ -22,6 +22,7 @@
 - Use an absolute `folder_path`
 - Song titles must match the format `{number} - {title}.{format}`
 - The thumbnail must have the same name as the album
+- If your file explorer is not `Nautilus`, the _browse_ actions might not work
 - Folder structure as follows
 
   > Files should be in a folder which is named after the album, inside a
