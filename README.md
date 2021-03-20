@@ -117,7 +117,7 @@
   - Handle `price` option, only LBC atm
 
 - June 12, 2020:
-  - Change webdriver yo improve speed: `Firefox -> Chrome`
+  - Change webdriver to improve speed: `Firefox -> Chrome`
   - Change settings file name: `settings.json -> upload_settings.json`
   - Move credentials from `.env` to `upload_settings.json`
   - Remove `python-dotenv` requirement
