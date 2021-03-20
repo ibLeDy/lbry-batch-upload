@@ -11,6 +11,7 @@
 
 - [Prerequisites](#prerequisites)
 - [Usage](#usage)
+- [Configuration](#configuration)
 - [Changelog](#changelog)
 - [License](#license)
 
@@ -77,6 +78,42 @@
   ```sh
   python lbry_batch_upload.py
   ```
+
+## Configuration
+
+- `user`
+  - `email`
+    > the email you log in with, (see how it is used on line [89](./lbry_batch_upload.py#L89))
+  - `password`
+    > the password you log in with, (see how it is used on line [92](./lbry_batch_upload.py#L92))
+
+- `files`
+  - `folder_path`
+    > full (absolute) path to the album folder
+  - `audio_format`
+    > the extension of the audio files (`.mp3`, `.flac`, ...)
+  - `thumbnail_format`
+    > the extension of the thumbnail (`.jpg`, `.png`, ...)
+  - `excluded`
+    > files that you **don't** want to upload
+
+- `upload`
+  - `description`
+    > multi-line string with the description
+  - `tags`
+    > up to 5
+  - `channel`
+    > exact name as it appears on the channels list
+  - `deposit`
+    > floating point number
+  - `price`
+    > floating point number or **false** if you don't want to set a price
+  - `language`
+    > two-character language code (`en`, `es`, ...)
+  - `license_type`
+    > license name, as it appears on the dropdown menu of an upload
+  - `license_notice`
+    > text for the license notice
 
 ## Changelog
 
