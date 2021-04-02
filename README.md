@@ -1,6 +1,19 @@
 <div align="center">
   <h1>LBRY Batch Upload</h1>
-  <p>Automate uploading entire folders to <a href="https://odysee.com" target="_blank">lbry.tv</a></p>
+  <p>
+    Automate uploading entire folders to <a href="https://odysee.com" target="_blank">lbry.tv</a>
+  </p>
+  <p>
+    <a href="https://results.pre-commit.ci/latest/github/ibLeDy/lbry-batch-upload/master">
+        <img alt="pre-commit.ci status" src="https://results.pre-commit.ci/badge/github/ibLeDy/lbry-batch-upload/master.svg" />
+    </a>
+    <a href="https://choosealicense.com/licenses/mit/">
+      <img alt="license" src="https://img.shields.io/github/license/ibLeDy/lbry-batch-upload">
+    </a>
+    <a href="https://github.com/psf/black">
+        <img alt="code style" src="https://img.shields.io/badge/code%20style-black-000000.svg" />
+    </a>
+  </p>
 </div>
 
 <div align="center">
