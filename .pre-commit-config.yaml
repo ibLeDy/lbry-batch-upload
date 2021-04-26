@@ -14,7 +14,7 @@ repos:
     -   id: requirements-txt-fixer
     -   id: trailing-whitespace
 -   repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.1.9
+    rev: v1.1.10
     hooks:
     -   id: remove-crlf
     -   id: remove-tabs
@@ -24,7 +24,7 @@ repos:
     -   id: markdownlint
         args: ["--rules=~MD033,~MD002,~MD013"]
 -   repo: https://github.com/psf/black
-    rev: 20.8b1
+    rev: 21.4b0
     hooks:
     -   id: black
         args: [--skip-string-normalization]
