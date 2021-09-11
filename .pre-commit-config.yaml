@@ -21,11 +21,6 @@ repos:
     hooks:
       - id: remove-crlf
       - id: remove-tabs
-  - repo: https://github.com/markdownlint/markdownlint
-    rev: v0.11.0
-    hooks:
-      - id: markdownlint
-        args: ["--rules=~MD033,~MD002,~MD013"]
   - repo: https://github.com/psf/black
     rev: 21.8b0
     hooks:
