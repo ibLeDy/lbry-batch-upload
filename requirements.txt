@@ -20,6 +20,10 @@ pyrect==0.1.4
     # via pygetwindow
 pyscreeze==0.1.26
     # via pyautogui
+python3-xlib==0.15
+    # via
+    #   mouseinfo
+    #   pyautogui
 pytweening==1.0.3
     # via pyautogui
 selenium==3.141.0
@@ -28,5 +32,5 @@ toml==0.10.2
     # via -r requirements.in
 unidecode==1.2.0
     # via -r requirements.in
-urllib3==1.26.5
+urllib3==1.26.18
     # via selenium
